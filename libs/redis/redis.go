@@ -3,7 +3,7 @@ package redis
 import (
 	"errors"
 	"github.com/garyburd/redigo/redis"
-	"github.com/goconfig"
+	"github.com/Unknwon/goconfig"
 	"time"
 )
 
@@ -13,7 +13,7 @@ func init() {
 		panic(err)
 	}
 
-	ip, err := c.GetValue("Redis", "ip")
+	ip, err := c.GetValue("Redis", "address")
 	if err != nil {
 		panic(err)
 	}
