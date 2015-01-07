@@ -27,10 +27,14 @@ func ReturnSuccess(conn *network.Connect, v interface{}) error {
 
 func ReturnError(conn *network.Connect, lineNum int, err error) error {
 
-	log.Logger.Errorf("Action Error : line[%d] , %v", lineNum, err)
+	log.Logger.Errorf("Line[%d] , %s", lineNum, err.Error())
 
 	message := new(protocol.Error)
-	message.Id = conn.Request.Id
+
+	if conn.Request != nil {
+		message.Id = conn.Request.Id
+	}
+
 	message.Error = protocol.ErrorMessage{}
 	message.Error.Code = lineNum
 	message.Error.Message = err.Error()
