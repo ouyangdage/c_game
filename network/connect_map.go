@@ -39,10 +39,7 @@ func (p *PlayerMap) Set(areaId, roleId int, connect *Connect) {
 	}
 
 	if conn, ok := p.AreaMap[areaId][roleId]; ok {
-		errMsg := new(protocol.Error)
-		errMsg.Error.Code = protocol.ERROR_TOKEN
-		errMsg.Error.Message = "连接失效,请重连"
-		conn.Conn.WriteMessage(websocket.TextMessage, protocol.MarshalError(errMsg))
+		conn.Conn.WriteMessage(websocket.TextMessage, protocol.MarshalError(0, protocol.ERROR_TOKEN, "连接失效,请重连"))
 		conn.Conn.Close()
 	}
 

@@ -4,9 +4,9 @@ import "encoding/json"
 
 type Request struct {
 	//	Jsonrpc string        `json:"jsonrpc"`
-	Id      string        `json:"id"`
-	Method  string        `json:"method"`
-	Params  []interface{} `json:"params"`
+	Id     int           `json:"id"`
+	Method string        `json:"method"`
+	Params []interface{} `json:"params"`
 }
 
 func Unmarshal(s []byte, msg *Request) error {

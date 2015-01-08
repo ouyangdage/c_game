@@ -29,17 +29,7 @@ func ReturnError(conn *network.Connect, request *protocol.Request, lineNum int, 
 
 	log.Logger.Errorf("Line[%d] , %s", lineNum, err.Error())
 
-	message := new(protocol.Error)
-
-	if request != nil {
-		message.Id = request.Id
-	}
-
-	message.Error = protocol.ErrorMessage{}
-	message.Error.Code = lineNum
-	message.Error.Message = err.Error()
-
-	conn.Send(protocol.MarshalError(message))
+	conn.Send(protocol.MarshalError(request.Id, lineNum, err.Error()))
 	return nil
 }
 
