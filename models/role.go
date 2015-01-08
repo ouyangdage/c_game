@@ -22,7 +22,7 @@ type roleModel struct {
 
 func (this roleModel) FindOneByArea(uid, areaId int) (*table.RoleTable, error) {
 	Role := new(table.RoleTable)
-	_, err := db.DataBase.Where("uid = ? AND area_id = ? ", uid, areaId).Get(&Role)
+	_, err := db.DataBase.Where("uid = ? AND area_id = ? ", uid, areaId).Get(Role)
 	return Role, err
 }
 

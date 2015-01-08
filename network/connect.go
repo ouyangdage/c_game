@@ -2,6 +2,7 @@ package network
 
 import (
 	"github.com/fhbzyc/c_game/libs/log"
+	"github.com/fhbzyc/c_game/protocol"
 	"github.com/gorilla/websocket"
 )
 
@@ -15,16 +16,16 @@ type Connect struct {
 	Chan   chan []byte
 }
 
-func (this *Connect) Send(s []byte) error {
-	this.Chan <- s
+func (c *Connect) Send(s []byte) error {
+	c.Chan <- s
 	return nil
 }
 
-func (this *Connect) Write() {
-	this.Chan = make(chan []byte, 10)
+func (c *Connect) Write() {
+	c.Chan = make(chan []byte, 10)
 	go func() {
-		for s := range this.Chan {
-			if err := this.Conn.WriteMessage(websocket.TextMessage, s); err != nil {
+		for s := range c.Chan {
+			if err := c.Conn.WriteMessage(websocket.TextMessage, s); err != nil {
 				log.Logger.Warn("Send Message Error: ", err)
 			} else {
 				log.Logger.Info("Send Success")
@@ -33,13 +34,21 @@ func (this *Connect) Write() {
 	}()
 }
 
-func (this *Connect) Close() {
+func (c *Connect) Close() {
 
-	playerMap.Delete(this.AreaId, this.RoleId)
-	this.Conn.Close()
-	close(this.Chan)
+	playerMap.Delete(c.AreaId, c.RoleId)
+	c.Conn.Close()
+	close(c.Chan)
 }
 
-func (this *Connect) InMap() {
-	playerMap.Set(this.AreaId, this.RoleId, this)
+func (c *Connect) InMap() {
+	conn := playerMap.Get(c.AreaId, c.RoleId)
+	if conn != nil {
+		errMsg := new(protocol.Error)
+		errMsg.Error.Code = protocol.ERROR_TOKEN
+		errMsg.Error.Message = "连接失效,请重连"
+		conn.Conn.WriteMessage(websocket.TextMessage, protocol.MarshalError(errMsg))
+		conn.Conn.Close()
+	}
+	playerMap.Set(c.AreaId, c.RoleId, c)
 }

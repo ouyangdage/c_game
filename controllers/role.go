@@ -32,9 +32,16 @@ func (this *Controller) GetPlayer() error {
 		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters, 不存在的分区"))
 	}
 
-	role, err := models.Role.Insert(this.Connect.Uid, gameArea.AreaId)
+	role, err := models.Role.FindOneByArea(this.Connect.Uid, gameArea.AreaId)
 	if err != nil {
 		return this.returnError(request, lineNum(), err)
+	}
+
+	if role.RoleId == 0 {
+		role, err = models.Role.Insert(this.Connect.Uid, gameArea.AreaId)
+		if err != nil {
+			return this.returnError(request, lineNum(), err)
+		}
 	}
 
 	this.Connect.RoleId = role.RoleId
