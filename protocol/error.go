@@ -1,7 +1,7 @@
 package protocol
 
 type Error struct {
-	Id    string       `json:"id"`
+	Id    int          `json:"id"`
 	Error ErrorMessage `json:"error"`
 }
 
