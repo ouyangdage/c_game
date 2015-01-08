@@ -1,25 +1,21 @@
 package network
 
 import (
-	"fmt"
-	"github.com/gorilla/websocket"
 	"github.com/fhbzyc/c_game/libs/log"
-	"github.com/fhbzyc/c_game/protocol"
+	"github.com/gorilla/websocket"
 )
 
 const ()
 
 type Connect struct {
-	Uid     int
-	AreaId  int
-	RoleId  int
-	Conn    *websocket.Conn
-	Chan    chan []byte
-	Request *protocol.Request
+	Uid    int
+	AreaId int
+	RoleId int
+	Conn   *websocket.Conn
+	Chan   chan []byte
 }
 
 func (this *Connect) Send(s []byte) error {
-	fmt.Println(string(s))
 	this.Chan <- s
 	return nil
 }

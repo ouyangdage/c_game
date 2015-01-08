@@ -17,34 +17,35 @@ import (
 	//	"strings"
 	//	"time"
 	//	"models/table"
-	"github.com/fhbzyc/c_game/network"
 )
 
-func (this Controller) Signin(connect *network.Connect) error {
+func (this *Controller) Signin() error {
 
-	username, ok := connect.Request.Params[0].(string)
+	request := this.Request
+
+	username, ok := request.Params[0].(string)
 	if !ok {
-		return ReturnError(connect, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 
-	_, ok = connect.Request.Params[1].(string)
+	_, ok = request.Params[1].(string)
 	if !ok {
-		return ReturnError(connect, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 
 	user, err := models.User.FindOneByPlatformId(0, username)
 	if err != nil {
-		return ReturnError(connect, lineNum(), err)
+		return this.returnError(request, lineNum(), err)
 	} else if user.PlatformUuid == "" {
 		user.PlatformUuid = username
 		if err := models.User.Insert(user); err != nil {
-			return ReturnError(connect, lineNum(), err)
+			return this.returnError(request, lineNum(), err)
 		}
 	}
 
-	connect.Uid = user.Uid
+	this.Connect.Uid = user.Uid
 
-	return ReturnSuccess(connect, user)
+	return this.returnSuccess(request, user)
 }
 
 //	request := new(protocol.LoginRequest)

@@ -13,7 +13,10 @@ import (
 	"runtime"
 )
 
-type Handler struct{}
+type Handler struct {
+	*controllers.Controller
+	funcMap map[string]reflect.Value
+}
 
 func (h Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
@@ -45,11 +48,15 @@ func (h Handler) Read(connect *network.Connect) {
 	//		}
 	//	}()
 
-	log.Logger.Info("A new client")
+	log.Logger.Infof("A New Client [address:%s]", connect.Conn.LocalAddr().String())
 
-	val := reflect.ValueOf(connect)
-	params := make([]reflect.Value, 1, 1)
-	params[0] = val
+	if h.Controller == nil {
+
+		h.Controller = new(controllers.Controller)
+		h.Connect = connect
+		h.Request = new(protocol.Request)
+	}
+
 	for {
 
 		_, msg, err := connect.Conn.ReadMessage()
@@ -63,28 +70,39 @@ func (h Handler) Read(connect *network.Connect) {
 			return
 		}
 
-		request := new(protocol.Request)
-		if err = protocol.Unmarshal(msg, request); err != nil {
+		h.Request = new(protocol.Request)
+		if err = protocol.Unmarshal(msg, h.Request); err != nil {
 
-			controllers.ReturnError(connect, lineNum(), err)
+			controllers.ReturnError(connect, nil, lineNum(), err)
 			continue
 		}
 
-		method, ok := getMethod(request)
-		if !ok {
-			controllers.ReturnError(connect, lineNum(), fmt.Errorf("Method not found"))
-			continue
-		} else {
-			connect.Request = request
-			method.Call(params)
-		}
+		h.runMethod()
 	}
 }
 
-func getMethod(request *protocol.Request) (reflect.Value, bool) {
+func (h *Handler) runMethod() {
 
-	v, ok := controllers.FuncMap[request.Method]
-	return v, ok
+	if h.funcMap == nil {
+
+		h.funcMap = make(map[string]reflect.Value)
+		value := reflect.ValueOf(h.Controller)
+
+		numMethod := value.NumMethod()
+
+		for i := 0; i < numMethod; i++ {
+
+			h.funcMap[value.Type().Method(i).Name] = value.Method(i)
+		}
+	}
+
+	method, ok := h.funcMap[h.Request.Method]
+	if !ok {
+		controllers.ReturnError(h.Connect, h.Request, lineNum(), fmt.Errorf("Method not found"))
+	} else {
+
+		method.Call([]reflect.Value{})
+	}
 }
 
 func lineNum() int {
