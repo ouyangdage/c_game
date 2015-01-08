@@ -2,7 +2,6 @@ package network
 
 import (
 	"github.com/fhbzyc/c_game/libs/log"
-	"github.com/fhbzyc/c_game/protocol"
 	"github.com/gorilla/websocket"
 )
 
@@ -42,13 +41,5 @@ func (c *Connect) Close() {
 }
 
 func (c *Connect) InMap() {
-	conn := playerMap.Get(c.AreaId, c.RoleId)
-	if conn != nil {
-		errMsg := new(protocol.Error)
-		errMsg.Error.Code = protocol.ERROR_TOKEN
-		errMsg.Error.Message = "连接失效,请重连"
-		conn.Conn.WriteMessage(websocket.TextMessage, protocol.MarshalError(errMsg))
-		conn.Conn.Close()
-	}
 	playerMap.Set(c.AreaId, c.RoleId, c)
 }

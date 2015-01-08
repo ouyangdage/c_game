@@ -1,6 +1,8 @@
 package network
 
 import (
+	"github.com/fhbzyc/c_game/protocol"
+	"github.com/gorilla/websocket"
 	"sync"
 )
 
@@ -28,11 +30,22 @@ func (p *PlayerMap) Get(areaId, roleId int) *Connect {
 }
 
 func (p *PlayerMap) Set(areaId, roleId int, connect *Connect) {
+
 	p.Lock.Lock()
 	defer p.Lock.Unlock()
+
 	if _, ok := p.AreaMap[areaId]; !ok {
 		p.AreaMap[areaId] = make(map[int]*Connect)
 	}
+
+	if conn, ok := p.AreaMap[areaId][roleId]; ok {
+		errMsg := new(protocol.Error)
+		errMsg.Error.Code = protocol.ERROR_TOKEN
+		errMsg.Error.Message = "连接失效,请重连"
+		conn.Conn.WriteMessage(websocket.TextMessage, protocol.MarshalError(errMsg))
+		conn.Conn.Close()
+	}
+
 	p.AreaMap[areaId][roleId] = connect
 }
 
