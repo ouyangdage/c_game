@@ -24,3 +24,9 @@ func (this HeroModel) Update(hero *table.HeroTable) error {
 	_, err := db.DataBase.Update(hero)
 	return err
 }
+
+func (this HeroModel) FindOne(roleId, heroId int) (*table.HeroTable, error) {
+	result := new(table.HeroTable)
+	_, err := db.DataBase.Where("role_id = ? AND hero_id = ?", roleId, heroId).Get(result)
+	return result, err
+}

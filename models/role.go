@@ -6,19 +6,13 @@ import (
 	"time"
 )
 
-var Role roleModel
-
-type roleModel struct {
-	//	MaxActionValue int
-	//	ActionWaitTime int
+var Role roleModel = roleModel{
+	LevelUpPS: []int{10, 10, 20, 20, 20, 20},
 }
 
-//
-//func init() {
-//	Role.MaxActionValue = 5
-//	Role.ActionWaitTime = 300
-//	DataBase.AddTableWithName(RoleData{}, "role").SetKeys(false, "Uid")
-//}
+type roleModel struct {
+	LevelUpPS []int
+}
 
 func (this roleModel) FindOneByArea(uid, areaId int) (*table.RoleTable, error) {
 	Role := new(table.RoleTable)
@@ -133,17 +127,47 @@ func (this roleModel) Count(name string) (int, error) {
 	return int(n), err
 }
 
+func (this roleModel) AddExp(role *table.RoleTable, exp int) error {
+
+	//	oldExp := role.Exp
+	oldLevel := role.GetLevel()
+	oldPS := role.GetPhysicalStrength()
+
+	maxExp := table.ExpToLevel[len(table.ExpToLevel)-1]
+
+	role.Exp += exp
+	if role.Exp > maxExp {
+		role.Exp = maxExp
+	}
+
+	newLevel := role.GetLevel()
+
+	if newLevel > oldLevel {
+		addPS := 0
+		for i := 0; i > oldLevel; i-- {
+			addPS += this.LevelUpPS[i-2]
+		}
+
+		role.SetPhysicalStrength(addPS + oldPS)
+
+		this.LevelUp(role)
+	}
+
+	return nil
+}
+
+func (this roleModel) LevelUp(role *table.RoleTable) {
+	go func() {
+		// 检查升级主线任务
+
+	}()
+}
+
 func (this roleModel) Update(role *table.RoleTable) error {
 	_, err := db.DataBase.Update(role)
 	return err
 }
 
-//
-//func (this *RoleData) SetName(name string) error {
-//	this.Name = name
-//	_, err := DataBase.Update(this)
-//	return err
-//}
 //
 //func (this *RoleData) ActionValue() int {
 //
