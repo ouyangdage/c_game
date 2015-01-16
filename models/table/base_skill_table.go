@@ -9,8 +9,11 @@ func init() {
 }
 
 type BaseSkillTable struct {
-	SkillId int    `xorm:"pk autoincr"`
-	Name    string `xorm:"'skill_name' NOT NULL DEFAULT '' VARCHAR(255)"`
+	SkillId      int    `xorm:"pk autoincr"`
+	Name         string `xorm:"'skill_name' NOT NULL DEFAULT '' VARCHAR(255)"`
+	MaxLevel     int    `xorm:"'skill_max_level' NOT NULL DEFAULT 0 INT(11)"`
+	BaseCoin     int    `xorm:"'skill_base_coin' NOT NULL DEFAULT 0 INT(11)"`
+	Levelup_Coin int    `xorm:"'skill_levelup_coin' NOT NULL DEFAULT 0 INT(11)"`
 }
 
 func (s BaseSkillTable) TableName() string {
