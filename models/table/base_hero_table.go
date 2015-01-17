@@ -2,10 +2,13 @@ package table
 
 import (
 	"github.com/fhbzyc/c_game/libs/db"
+	"github.com/go-xorm/xorm"
 )
 
 func init() {
-	db.DataBase.Sync(new(BaseHeroTable))
+	baseHeroTable := new(BaseHeroTable)
+	db.DataBase.Sync(baseHeroTable)
+	db.DataBase.MapCacher(baseHeroTable, xorm.NewLRUCacher(xorm.NewMemoryStore(), 1000))
 }
 
 type BaseHeroTable struct {

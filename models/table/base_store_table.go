@@ -10,6 +10,7 @@ func init() {
 
 type BaseStoreTable struct {
 	GoodsId int    `xorm:"pk autoincr"`
+	itemId  int    `xorm:"NOT NULL DEFAULT 0"`
 	Type    int    `xorm:"'goods_type' pk TINYINT(1)"`
 	Name    string `xorm:"'goods_name' NOT NULL DEFAULT ''"`
 	Price   int    `xorm:"'goods_price' NOT NULL DEFAULT 0"`
