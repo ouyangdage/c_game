@@ -10,7 +10,8 @@ func init() {
 
 type GameAreaTable struct {
 	AreaId int    `xorm:"pk autoincr"`
-	Name   string `xorm:"'area_name' NOT NULL DEFAULT '' VARCHAR(255)"`
+	Name   string `xorm:"'area_name' NOT NULL DEFAULT ''"`
+	Desc   string `xorm:"'area_name' NOT NULL DEFAULT ''"`
 }
 
 func (this GameAreaTable) TableName() string {

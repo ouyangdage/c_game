@@ -10,9 +10,25 @@ var Item ItemModel
 type ItemModel struct {
 }
 
-func (this ItemModel) FindAll(roleId int) ([]table.ItemTable, error) {
+func (this ItemModel) FindAll(roleId int) []table.ItemTable {
 	var list []table.ItemTable
-	return list, db.DataBase.Where("role_id = ?", roleId).Find(&list)
+	err := db.DataBase.Where("role_id = ?", roleId).Find(&list)
+	if err != nil {
+		panic(err.Error())
+	}
+	return list
+}
+
+func (this ItemModel) FindOne(roleId, itemId int) *table.ItemTable {
+	item := new(table.ItemTable)
+	find, err := db.DataBase.Where("role_id = ? AND item_id = ?", roleId, itemId).Get(item)
+	if err != nil {
+		panic(err.Error())
+	}
+	if !find {
+		return nil
+	}
+	return item
 }
 
 func (this ItemModel) Sub(item *table.ItemTable, num int) error {
@@ -27,22 +43,21 @@ func (this ItemModel) Sub(item *table.ItemTable, num int) error {
 	return err
 }
 
-func (this ItemModel) Add(roleId, itemId, num int) (*table.ItemTable, error) {
+func (this ItemModel) Add(roleId, itemId, num int) *table.ItemTable {
 
-	item := new(table.ItemTable)
+	item := this.FindOne(roleId, itemId)
 
-	_, err := db.DataBase.Where("role_id = ? AND item_id = ?", roleId, itemId).Get(item)
-	if err != nil {
-		return item, err
-	}
-
-	if item.ItemId == 0 {
+	if item == nil {
+		item = new(table.ItemTable)
 		item.ItemId = itemId
 		item.RoleId = roleId
-	} else {
-		item.Num += num
+	}
+	item.Num += num
+
+	_, err := db.DataBase.Insert(item)
+	if err != nil {
+		panic(err.Error())
 	}
 
-	_, err = db.DataBase.Insert(item)
-	return item, err
+	return item
 }
