@@ -37,7 +37,7 @@ func (this roleModel) Insert(uid, areaId int) (*table.RoleTable, error) {
 	return Role, err
 }
 
-func (this roleModel) AddCoin(Role *table.RoleTable, FinanceType table.FinanceType, coin int, desc string) error {
+func (this roleModel) AddCoin(Role *table.RoleTable, coin int, FinanceType table.FinanceType, desc string) error {
 
 	oldmoney := Role.Coin
 

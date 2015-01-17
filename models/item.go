@@ -10,13 +10,9 @@ var Item itemModel
 type itemModel struct {
 }
 
-func (this itemModel) FindAll(roleId int) []table.ItemTable {
+func (this itemModel) FindAll(roleId int) ([]table.ItemTable, error) {
 	var list []table.ItemTable
-	err := db.DataBase.Where("role_id = ?", roleId).Find(&list)
-	if err != nil {
-		panic(err.Error())
-	}
-	return list
+	return list, db.DataBase.Where("role_id = ?", roleId).Find(&list)
 }
 
 func (this itemModel) FindOne(roleId, itemId int) (*table.ItemTable, error) {

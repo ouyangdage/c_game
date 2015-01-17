@@ -6,17 +6,17 @@ import (
 	"github.com/fhbzyc/c_game/models/table"
 )
 
-var BaseItem BaseItemModel
+var BaseItem baseItemModel
 
-type BaseItemModel struct {
+type baseItemModel struct {
 }
 
-func (this BaseItemModel) FindAll() ([]table.BaseItemTable, error) {
+func (this baseItemModel) FindAll() ([]table.BaseItemTable, error) {
 	var list []table.BaseItemTable
 	return list, db.DataBase.Find(&list)
 }
 
-func (this BaseItemModel) FindOne(itemId int) table.BaseItemTable {
+func (this baseItemModel) FindOne(itemId int) table.BaseItemTable {
 	list, _ := this.FindAll()
 
 	for _, item := range list {

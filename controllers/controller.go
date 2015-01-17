@@ -33,6 +33,10 @@ func (this *Controller) getItem(item int) *table.ItemTable {
 	return getItem(this.Connect.RoleId, item)
 }
 
+func (this *Controller) itemList() []table.ItemTable {
+	return itemList(this.Connect.RoleId)
+}
+
 func getRole(roleId int) *table.RoleTable {
 	role, err := models.Role.FindOne(roleId)
 	if err != nil {
@@ -64,4 +68,12 @@ func getItem(roleId, itemId int) *table.ItemTable {
 		panic(ERROR_ITEM_NOT_HAVE)
 	}
 	return item
+}
+
+func itemList(roleId int) []table.ItemTable {
+	items, err := models.Item.FindAll(roleId)
+	if err != nil {
+		panic(err)
+	}
+	return items
 }
