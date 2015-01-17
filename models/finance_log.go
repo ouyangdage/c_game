@@ -13,20 +13,6 @@ var (
 
 func init() {
 	go readFinanceChan()
-
-	financeStrMap[table.FINANCE_ADMIN] = "内部添加"
-	financeStrMap[table.FINANCE_BUY_DIAMOND] = "充值"
-	financeStrMap[table.FINANCE_BUY_ACTION] = "买体力"
-	financeStrMap[table.FINANCE_BUY_GENERAL] = "买英雄"
-	financeStrMap[table.FINANCE_BUY_COIN] = "兑换金币"
-	financeStrMap[table.FINANCE_ITEM_LEVELUP] = "道具升级"
-	financeStrMap[table.FINANCE_GENERAL_LEVELUP] = "英雄升级"
-	financeStrMap[table.FINANCE_MAIL_GET] = "邮件领取"
-	financeStrMap[table.FINANCE_DUPLICATE_USE] = "临时道具"
-	financeStrMap[table.FINANCE_DUPLICATE_GET] = "副本获得"
-	financeStrMap[table.FINANCE_SIGN_GET] = "签到"
-	financeStrMap[table.FINANCE_REVIVE] = "复活"
-	financeStrMap[table.FINANCE_GENERAL_LIST_ADD] = "添加英雄"
 }
 
 func readFinanceChan() {

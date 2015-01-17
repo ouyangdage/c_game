@@ -10,37 +10,37 @@ func (this *Controller) GetPlayer() error {
 	request := this.Request
 
 	if this.Connect.Uid == 0 {
-		return this.returnError(request, lineNum(), fmt.Errorf("请选择服务器"))
+		return this.returnError(lineNum(), fmt.Errorf("请选择服务器"))
 	}
 
 	if len(request.Params) != 1 {
-		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 
 	areaIdFloat, ok := request.Params[0].(float64)
 	if !ok {
-		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 	areaId := int(areaIdFloat)
 
 	gameArea, err := models.GameArea.FindOne(areaId)
 	if err != nil {
-		return this.returnError(request, lineNum(), err)
+		return this.returnError(lineNum(), err)
 	}
 
 	if gameArea.AreaId == 0 {
-		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters, 不存在的分区"))
+		return this.returnError(lineNum(), fmt.Errorf("Invalid method parameters, 不存在的分区"))
 	}
 
 	role, err := models.Role.FindOneByArea(this.Connect.Uid, gameArea.AreaId)
 	if err != nil {
-		return this.returnError(request, lineNum(), err)
+		return this.returnError(lineNum(), err)
 	}
 
 	if role.RoleId == 0 {
 		role, err = models.Role.Insert(this.Connect.Uid, gameArea.AreaId)
 		if err != nil {
-			return this.returnError(request, lineNum(), err)
+			return this.returnError(lineNum(), err)
 		}
 	}
 
@@ -48,5 +48,5 @@ func (this *Controller) GetPlayer() error {
 	this.Connect.AreaId = role.AreaId
 	this.Connect.InMap()
 
-	return this.returnSuccess(request, role)
+	return this.returnSuccess(role)
 }

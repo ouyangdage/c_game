@@ -7,12 +7,12 @@ import (
 	"runtime"
 )
 
-func (this *Controller) returnSuccess(request *protocol.Request, v interface{}) error {
-	return ReturnSuccess(this.Connect, request, v)
+func (this *Controller) returnSuccess(v interface{}) error {
+	return ReturnSuccess(this.Connect, this.Request, v)
 }
 
-func (this *Controller) returnError(request *protocol.Request, lineNum int, err error) error {
-	return ReturnError(this.Connect, request, lineNum, err)
+func (this *Controller) returnError(lineNum int, err error) error {
+	return ReturnError(this.Connect, this.Request, lineNum, err)
 }
 
 func ReturnSuccess(conn *network.Connect, request *protocol.Request, v interface{}) error {

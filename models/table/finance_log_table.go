@@ -1,6 +1,5 @@
 package table
 
-
 import (
 	"github.com/fhbzyc/c_game/libs/db"
 )
@@ -15,7 +14,7 @@ const (
 	_ FinanceType = iota
 	FINANCE_ADMIN
 	FINANCE_BUY_DIAMOND
-	FINANCE_BUY_ACTION
+	FINANCE_HERO_STAR_UP
 	FINANCE_BUY_GENERAL
 	FINANCE_BUY_COIN
 	FINANCE_ITEM_LEVELUP
@@ -50,4 +49,3 @@ type FinanceLog struct {
 func (this FinanceLog) TableName() string {
 	return "role_finance_log"
 }
-

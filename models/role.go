@@ -22,7 +22,10 @@ func (this roleModel) FindOneByArea(uid, areaId int) (*table.RoleTable, error) {
 
 func (this roleModel) FindOne(roleId int) (*table.RoleTable, error) {
 	Role := new(table.RoleTable)
-	_, err := db.DataBase.Id(roleId).Get(Role)
+	find, err := db.DataBase.Id(roleId).Get(Role)
+	if !find {
+		return nil, err
+	}
 	return Role, err
 }
 
@@ -56,7 +59,7 @@ func (this roleModel) AddCoin(Role *table.RoleTable, FinanceType table.FinanceTy
 	return err
 }
 
-func (this roleModel) SubCoin(Role *table.RoleTable, FinanceType table.FinanceType, coin int, desc string) error {
+func (this roleModel) SubCoin(Role *table.RoleTable, coin int, FinanceType table.FinanceType, desc string) error {
 
 	oldmoney := Role.Coin
 

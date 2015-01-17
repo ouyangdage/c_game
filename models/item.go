@@ -5,12 +5,12 @@ import (
 	"github.com/fhbzyc/c_game/models/table"
 )
 
-var Item ItemModel
+var Item itemModel
 
-type ItemModel struct {
+type itemModel struct {
 }
 
-func (this ItemModel) FindAll(roleId int) []table.ItemTable {
+func (this itemModel) FindAll(roleId int) []table.ItemTable {
 	var list []table.ItemTable
 	err := db.DataBase.Where("role_id = ?", roleId).Find(&list)
 	if err != nil {
@@ -19,19 +19,16 @@ func (this ItemModel) FindAll(roleId int) []table.ItemTable {
 	return list
 }
 
-func (this ItemModel) FindOne(roleId, itemId int) *table.ItemTable {
+func (this itemModel) FindOne(roleId, itemId int) (*table.ItemTable, error) {
 	item := new(table.ItemTable)
 	find, err := db.DataBase.Where("role_id = ? AND item_id = ?", roleId, itemId).Get(item)
-	if err != nil {
-		panic(err.Error())
-	}
 	if !find {
-		return nil
+		return nil, err
 	}
-	return item
+	return item, err
 }
 
-func (this ItemModel) Sub(item *table.ItemTable, num int) error {
+func (this itemModel) Sub(item *table.ItemTable, num int) error {
 
 	var err error
 	item.Num -= num
@@ -43,9 +40,12 @@ func (this ItemModel) Sub(item *table.ItemTable, num int) error {
 	return err
 }
 
-func (this ItemModel) Add(roleId, itemId, num int) *table.ItemTable {
+func (this itemModel) Add(roleId, itemId, num int) *table.ItemTable {
 
-	item := this.FindOne(roleId, itemId)
+	item, err := this.FindOne(roleId, itemId)
+	if err != nil {
+		panic(err)
+	}
 
 	if item == nil {
 		item = new(table.ItemTable)
@@ -54,9 +54,9 @@ func (this ItemModel) Add(roleId, itemId, num int) *table.ItemTable {
 	}
 	item.Num += num
 
-	_, err := db.DataBase.Insert(item)
+	_, err = db.DataBase.Insert(item)
 	if err != nil {
-		panic(err.Error())
+		panic(err)
 	}
 
 	return item

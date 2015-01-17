@@ -25,27 +25,27 @@ func (this *Controller) Signin() error {
 
 	username, ok := request.Params[0].(string)
 	if !ok {
-		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 
 	_, ok = request.Params[1].(string)
 	if !ok {
-		return this.returnError(request, lineNum(), fmt.Errorf("Invalid method parameters"))
+		return this.returnError(lineNum(), fmt.Errorf("Invalid method parameters"))
 	}
 
 	user, err := models.User.FindOneByPlatformId(0, username)
 	if err != nil {
-		return this.returnError(request, lineNum(), err)
+		return this.returnError(lineNum(), err)
 	} else if user.PlatformUuid == "" {
 		user.PlatformUuid = username
 		if err := models.User.Insert(user); err != nil {
-			return this.returnError(request, lineNum(), err)
+			return this.returnError(lineNum(), err)
 		}
 	}
 
 	this.Connect.Uid = user.Uid
 
-	return this.returnSuccess(request, user)
+	return this.returnSuccess(user)
 }
 
 //	request := new(protocol.LoginRequest)

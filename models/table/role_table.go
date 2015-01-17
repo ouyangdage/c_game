@@ -20,7 +20,7 @@ const (
 type RoleTable struct {
 	RoleId           int    `xorm:"pk autoincr"`
 	Name             string `xorm:"'role_name' index NOT NULL DEFAULT '' VARCHAR(10)"`
-	Uid              int    `xorm:"NOT NULL DEFAULT 0"`
+	Uid              int    `xorm:"index NOT NULL DEFAULT 0"`
 	AreaId           int    `xorm:"NOT NULL DEFAULT 0"`
 	Coin             int    `xorm:"'role_coin' NOT NULL DEFAULT 0"`
 	Gold             int    `xorm:"'role_gold' NOT NULL DEFAULT 0"`

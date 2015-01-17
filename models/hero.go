@@ -5,12 +5,12 @@ import (
 	"github.com/fhbzyc/c_game/models/table"
 )
 
-var Hero HeroModel
+var Hero heroModel
 
-type HeroModel struct {
+type heroModel struct {
 }
 
-func (this HeroModel) FindAll(roleId int) []table.HeroTable {
+func (this heroModel) FindAll(roleId int) []table.HeroTable {
 	var list []table.HeroTable
 	err := db.DataBase.Where("role_id = ?", roleId).Find(&list)
 	if err != nil {
@@ -20,24 +20,21 @@ func (this HeroModel) FindAll(roleId int) []table.HeroTable {
 
 }
 
-func (this HeroModel) Insert(hero *table.HeroTable) error {
+func (this heroModel) Insert(hero *table.HeroTable) error {
 	_, err := db.DataBase.Insert(hero)
 	return err
 }
 
-func (this HeroModel) Update(hero *table.HeroTable) error {
+func (this heroModel) Update(hero *table.HeroTable) error {
 	_, err := db.DataBase.Update(hero)
 	return err
 }
 
-func (this HeroModel) FindOne(roleId, heroId int) *table.HeroTable {
+func (this heroModel) FindOne(roleId, heroId int) (*table.HeroTable, error) {
 	hero := new(table.HeroTable)
 	find, err := db.DataBase.Where("role_id = ? AND hero_id = ?", roleId, heroId).Get(hero)
-	if err != nil {
-		panic(err.Error())
-	}
 	if !find {
-		return nil
+		return nil, err
 	}
-	return hero
+	return hero, err
 }
