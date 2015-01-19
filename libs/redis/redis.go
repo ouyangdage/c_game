@@ -2,8 +2,8 @@ package redis
 
 import (
 	"errors"
-	"github.com/garyburd/redigo/redis"
 	"github.com/Unknwon/goconfig"
+	"github.com/garyburd/redigo/redis"
 	"time"
 )
 
