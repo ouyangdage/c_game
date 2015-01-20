@@ -99,6 +99,9 @@ func (h *Handler) runMethod() {
 	method, ok := h.funcMap[h.Request.Method]
 	if !ok {
 		controllers.ReturnError(h.Connect, h.Request, lineNum(), fmt.Errorf("Method not found"))
+	} else if h.Request.Method != "GetPlayer" && h.Request.Method != "Signin" && h.Connect.RoleId == 0 {
+
+		controllers.ReturnError(h.Connect, h.Request, lineNum(), fmt.Errorf("还没选择服务器"))
 	} else {
 
 		method.Call([]reflect.Value{})
