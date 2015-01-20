@@ -1,10 +1,10 @@
 package db
 
 import (
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/go-xorm/xorm"
+	//	_ "github.com/go-sql-driver/mysql"
 	"github.com/Unknwon/goconfig"
-	//	_ "github.com/lib/pq"
+	"github.com/go-xorm/xorm"
+	_ "github.com/lib/pq"
 )
 
 var DataBase *xorm.Engine
